@@ -4,6 +4,15 @@ metadata:
   name: my-pod
 spec:
   containers:
-    - name: my-container
-      image: next-app:v1
+    - name: flex-signature-backend
+      image: flex-signature-backend:latest
       imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 80
+      resources:
+        requests:
+          cpu: 100m
+          memory: 200Mi
+        limits:
+          cpu: 200m
+          memory: 400Mi
