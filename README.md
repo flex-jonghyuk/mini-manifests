@@ -1,12 +1,17 @@
 # mini-manifests
 
+뽀짝 K8S, minikube + kubectl
+
 - [x] pod
 - [x] replicaSet
-- [ ] deployment
+- [x] deployment
 - [ ] service
-- [ ] ingress
-- [ ] configMap
 - [ ] Endpoints, EndpointsSlice
+- [ ] ingress
+- [ ] health check
+- [ ] configMap
 - [ ] helm chart
+- [ ] Argo CD
+- [ ] Zero Downtime Deployment(bluegreen, kanari)
 - [ ] App of Apps
 - [ ] service mesh
