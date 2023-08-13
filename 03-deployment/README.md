@@ -80,49 +80,6 @@ Deployment의 업데이트 전략(`strategy`)에는 크게 `RollingUpdate`와 `R
 
 그러나 `minReadySeconds` 설정은 롤아웃의 속도를 늦출 수 있으므로, 이를 설정할 때는 애플리케이션의 요구 사항과 가용성, 롤아웃 속도 등을 고려해야 합니다.
 
-### (참고) health check("readiness probe", "liveness probe")
-
-readinessProbe 및 livenessProbe는 Kubernetes Deployment의 Pod 템플릿 내의 각 컨테이너 스펙에서 설정할 수 있습니다. 이 프로브(probe)들은 컨테이너의 건강 상태를 확인하고, Kubernetes가 서비스 트래픽을 어떻게 처리할지 결정하는 데 도움을 줍니다.
-
-각 프로브는 다음과 같은 속성들을 가지고 있습니다:
-
-- initialDelaySeconds: 컨테이너가 시작된 후 프로브가 시작되기 전에 대기하는 시간(초)
-- periodSeconds: 프로브가 수행되는 간격(초)
-- timeoutSeconds: 프로브가 타임아웃되기 전의 최대 시간(초)
-- successThreshold: 프로브가 성공으로 간주되기 위한 최소 연속 성공 횟수
-- failureThreshold: 프로브 실패 후 재시도하기 전의 실패 허용 횟수
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: myapp-pod
-  labels:
-    app: myapp
-spec:
-  containers:
-    - name: myapp-container
-      image: myapp:1.0.0
-      ports:
-        - containerPort: 8080
-      livenessProbe:
-        httpGet:
-          path: /healthz
-          port: 8080
-        initialDelaySeconds: 15
-        periodSeconds: 20
-      readinessProbe:
-        httpGet:
-          path: /ready
-          port: 8080
-        initialDelaySeconds: 5
-        periodSeconds: 10
-```
-
-livenessProbe 또는 readinessProbe를 따로 설정하지 않으면, Kubernetes는 특별한 헬스 체크를 실행하지 않습니다. 즉, 컨테이너가 정상적으로 시작되었다면 실행 중으로 간주하고, Pod를 정상 상태라고 판단합니다.
-
-나중에 서비스 달아보면 해보자
-
 ### status
 
 Deployment의 `status` 필드는 Deployment의 현재 상태를 나타내며 읽기 전용입니다. 즉, 사용자가 직접 변경할 수 없는 상태 정보입니다.
