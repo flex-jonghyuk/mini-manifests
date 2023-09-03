@@ -162,5 +162,6 @@ spec:
 
 - 환경변수가 진짜 들어가는지 확인할 수 있는 엔드포인트를 하나 판 상태로 이미지를 하나 말아본다.
 - service, configmap, deployment를 모두 사용해 서비스를 노출시키고 api요청을 해보자
+- 값을 바꾸고 재기동을 시켜보자
 - `minikube service myconfig-service --url`
 - `http://127.0.0.1:64646/study`
