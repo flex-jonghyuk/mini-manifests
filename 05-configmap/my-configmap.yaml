@@ -1,0 +1,77 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: study-configmap
+data:
+  STUDY: "'flex-server-engineering'" # stringify 되어있어야함
+  PEOPLE: "['현태', '성천', '지선', '종혁']"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myconfig-service
+  labels:
+    app: myapp # deplpoyment와의 연결점
+spec:
+  selector:
+    app: myapp
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: 3000
+      nodePort: 30080
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment
+  labels:
+    app: myapp
+    type: frontend
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+        - name: flex-signature-backend
+          image: flex-signature-backend:configmap
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: STUDY
+              valueFrom:
+                configMapKeyRef:
+                  name: study-configmap
+                  key: STUDY
+            - name: PEOPLE
+              valueFrom:
+                configMapKeyRef:
+                  name: study-configmap
+                  key: PEOPLE
+          ports:
+            - containerPort: 3000
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 200Mi
+            limits:
+              cpu: 200m
+              memory: 400Mi
