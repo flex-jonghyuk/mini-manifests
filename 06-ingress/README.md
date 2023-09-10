@@ -204,9 +204,10 @@ spec:
 - signature-backend로 각각 다른 고유하고 배타적인 엔드포인트를 가진 이미지 2개를 굽습니다
 - 각 이미지를 각 서비스에 연결하고, ingress로 basepath에 따라 다른 서비스로 라우팅을 합니다
 - 단일 엔드포인트에 다른 path로 요청했을 때 올바른 pod으로 요청이 가는지 확인해봅니다
-- minikube에서 ingress를 로컬에 띄우려면
+- minikube에서 ingress를 로컬에 띄우기 위한 사전 준비
   - 에드온 설치 : `minikube addons enable ingress`
   - IP 확인 : `minikube ip`
   - `/etc/hosts`: 파일 수정 `192.168.99.100 jonghyuk.flex.com`
-  - `kubectl describe ing my-ingress` 로 인그레스 연결 상태 확인
+- 서비스 각각 열어주기: `minikube service max-service`, `minikube service jonghyuk-service`
+- `kubectl describe ing my-ingress` 로 인그레스 연결 상태 확인
 - 여기까지 하고 브라우저로 응답 확인 `jonghyuk.flex.com/jonghyuk`, `jonghyuk.flex.com/max`
