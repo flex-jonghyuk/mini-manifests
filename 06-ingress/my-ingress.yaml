@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: max-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: max-app
+  template:
+    metadata:
+      labels:
+        app: max-app
+    spec:
+      containers:
+        - name: max-container
+          image: flex-signature-backend:ingress-max-3
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 200Mi
+            limits:
+              cpu: 200m
+              memory: 400Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: max-service
+spec:
+  selector:
+    app: max-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jonghyuk-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: jonghyuk-app
+  template:
+    metadata:
+      labels:
+        app: jonghyuk-app
+    spec:
+      containers:
+        - name: jonghyuk-container
+          image: flex-signature-backend:ingress-jonghyuk-3
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 200Mi
+            limits:
+              cpu: 200m
+              memory: 400Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jonghyuk-service
+spec:
+  selector:
+    app: jonghyuk-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-ingress
+spec:
+  rules:
+    - host: "jonghyuk.flex.com"
+      http:
+        paths:
+          - path: /max
+            pathType: Prefix
+            backend:
+              service:
+                name: max-service
+                port:
+                  number: 80
+          - path: /jonghyuk
+            pathType: Prefix
+            backend:
+              service:
+                name: jonghyuk-service
+                port:
+                  number: 80
